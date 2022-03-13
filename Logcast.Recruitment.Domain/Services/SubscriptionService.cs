@@ -21,21 +21,20 @@ namespace Logcast.Recruitment.Domain.Services
             _subscriptionRepository = subscriptionRepository;
         }
 
-        public async Task<Guid> RegisterSubscriptionAsync(string name, string emailAddress)
+        //no need async await here, it created redundant state machine...
+        public Task<Guid> RegisterSubscriptionAsync(string name, string emailAddress)
         {
-            var subscriberId = await _subscriptionRepository.RegisterSubscriptionAsync(name, emailAddress);
-            return subscriberId;
+            return _subscriptionRepository.RegisterSubscriptionAsync(name, emailAddress);
         }
 
-        public async Task<SubscriberModel> GetSubscriberAsync(Guid subscriberId)
+        public Task<SubscriberModel> GetSubscriberAsync(Guid subscriberId)
         {
-            var subscriber = await _subscriptionRepository.GetSubscription(subscriberId);
-            return subscriber;
+            return _subscriptionRepository.GetSubscription(subscriberId);
         }
 
-        public async Task DeleteSubscriberAsync(Guid subscriberId)
+        public Task DeleteSubscriberAsync(Guid subscriberId)
         {
-            await _subscriptionRepository.DeleteSubscription(subscriberId);
+            return _subscriptionRepository.DeleteSubscription(subscriberId);
         }
     }
 }
