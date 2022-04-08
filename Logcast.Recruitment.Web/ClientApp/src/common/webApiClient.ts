@@ -1,4 +1,5 @@
 ﻿import {IHttpClient} from "./httpClient";
+import axios from 'axios';
 
 export function WebApiClient(): IHttpClient {
     const webApiClient: IHttpClient = {
@@ -9,6 +10,28 @@ export function WebApiClient(): IHttpClient {
             if (!response.ok) throw response;
 
             return parseResponse<T>(response);
+        },
+
+        async postAxios<T>(
+        url: string,
+        data?: any,
+        appendHeaders?: Record<string, string>
+        ): Promise<T> {
+            const header = {
+                "Enctype": "multipart/form-data",
+                "Accept": "text/plain",
+            };
+            
+            const response = await axios({
+                method: 'post',
+                url: url,
+                data: data,
+                headers: header
+            });
+
+            if (response.status !== 200) throw response;
+            
+            return await response.data;
         },
 
         async post<T>(

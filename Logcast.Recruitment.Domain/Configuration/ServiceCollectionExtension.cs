@@ -13,6 +13,7 @@ namespace Logcast.Recruitment.Domain.Configuration
         private static void AddServices(this IServiceCollection services)
         {
             services.AddTransient<ISubscriptionService, SubscriptionService>();
+            services.AddTransient<IFileService, FileService>();
         }
     }
 }
