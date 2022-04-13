@@ -1,5 +1,6 @@
 ﻿using Logcast.Recruitment.DataAccess.Factories;
 using Logcast.Recruitment.DataAccess.Repositories;
+using Logcast.Recruitment.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,16 +18,23 @@ namespace Logcast.Recruitment.DataAccess.Configuration
         {
             services.AddRepositories();
             services.AddFactories();
+            services.AddServices();
         }
 
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddTransient<IAudioRepository, AudioRepository>();
         }
 
         private static void AddFactories(this IServiceCollection services)
         {
             services.AddTransient<IDbContextFactory, DbContextFactory>();
+        }
+
+        private static void AddServices(this IServiceCollection services)
+        {
+            services.AddTransient<IFileStorage, FileStorage>();
         }
     }
 }
