@@ -11,6 +11,8 @@ namespace Logcast.Recruitment.DataAccess
 
         public DbSet<Subscription> Subscriptions { get; set; }
 
+        public DbSet<File> Files { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

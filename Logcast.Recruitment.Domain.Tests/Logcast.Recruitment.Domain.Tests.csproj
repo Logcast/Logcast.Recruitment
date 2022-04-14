@@ -21,4 +21,14 @@
     <ProjectReference Include="..\Logcast.Recruitment.Domain\Logcast.Recruitment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ServiceTests\TestFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ServiceTests\TestFiles\file_example.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
