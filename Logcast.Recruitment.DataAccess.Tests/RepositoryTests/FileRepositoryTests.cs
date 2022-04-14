@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Logcast.Recruitment.DataAccess.Entities;
-using Logcast.Recruitment.DataAccess.Exceptions;
 using Logcast.Recruitment.DataAccess.Factories;
 using Logcast.Recruitment.DataAccess.Repositories;
 using Logcast.Recruitment.DataAccess.Tests.Configuration;

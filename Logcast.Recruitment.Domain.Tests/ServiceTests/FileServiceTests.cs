@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,10 +43,12 @@ namespace Logcast.Recruitment.Domain.Tests.ServiceTests
             // Assert
             try
             {
-                var res = (await _fileService.AddFileAsync(fileMock.Object));
-                Assert.IsNotNull(res);
+                var createdFileId = await _fileService.AddFileAsync(fileMock.Object);
+                Assert.IsNotNull(createdFileId);
 
-                _fileToDiscard = res.Item3;
+                var createdFile = await _fileService.GetFileAsync(createdFileId);
+
+                _fileToDiscard = createdFile.Path;
             }
             catch (Exception) { }       
         }

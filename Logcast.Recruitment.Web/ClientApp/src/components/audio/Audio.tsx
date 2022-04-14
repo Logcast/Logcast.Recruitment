@@ -35,7 +35,9 @@ export const Audio = () => {
             .then((res) => {
                 const response = res as Array<FileInformation>;
                 setFilesData(response);
-            }).catch(e => { }); 
+            }).catch(e => { 
+                console.log(e);
+            }); 
             setRedrawing(false);
         }      
         if (playerIntermediateData.selectedId !== 0){
@@ -44,7 +46,9 @@ export const Audio = () => {
                 const response = res as FileInformation;
                 setEmergencyStop(false);
                 setMetadataPlayer(response);
-            }).catch(e => { }); 
+            }).catch(e => {
+                console.log(e);
+            }); 
         } else {
             setEmergencyStop(true);
         }
@@ -60,7 +64,9 @@ export const Audio = () => {
                 setAudioMetadata(response);
                 setRedrawing(true);
                 setStep(1);
-            }).catch(e => { });
+            }).catch(e => {
+                console.log(e);
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,5 +1,4 @@
-﻿using Logcast.Recruitment.Shared.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Logcast.Recruitment.Web.Models.Audio
 {

@@ -40,7 +40,7 @@ namespace Logcast.Recruitment.Web.Controllers
             {
                 var file = await _fileService.AddFileAsync(audioFile);
 
-                var updatedFileWithMetadataDetails = await _fileService.ExtractMetadata(file);
+                var updatedFileWithMetadataDetails = await _fileService.ExtractMetadataAsync(file);
 
                 return Ok(new UploadAudioFileResponse(updatedFileWithMetadataDetails));
             }
@@ -64,7 +64,7 @@ namespace Logcast.Recruitment.Web.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, "Audio metadata registered successfully")]
         public async Task<IActionResult> AddAudioMetadata([Required] [FromBody] AudioMetadataRequest request)
         {
-            await _fileService.UpdateMetadata(request.Id, request.Artist, request.Album, request.TrackTitle, request.Genre, request.TrackNumber);
+            await _fileService.UpdateMetadataAsync(request.Id, request.Artist, request.Album, request.TrackTitle, request.Genre, request.TrackNumber);
 
             return Ok();
         }
@@ -78,7 +78,7 @@ namespace Logcast.Recruitment.Web.Controllers
             try
             {
                 var file = await _fileService.GetFileAsync(audioId);
-                var stream = await _fileService.GetAudioStream(audioId);
+                var stream = await _fileService.GetAudioStreamAsync(audioId);
                 return File(stream, "audio/"+file.Type);
             }
             catch (Exception)
@@ -112,8 +112,15 @@ namespace Logcast.Recruitment.Web.Controllers
         [ProducesResponseType(typeof(FileModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFiles()
         {
-            var files = await _fileService.GetFilesAsync();
-            return Ok(files);
+            try
+            {
+                var files = await _fileService.GetFilesAsync();
+                return Ok(files);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

@@ -12,12 +12,12 @@ namespace Logcast.Recruitment.Domain.Services
 {
     public interface IFileService
     {
-        Task<Tuple<int, string, string>> AddFileAsync(IFormFile audioFile);
+        Task<int> AddFileAsync(IFormFile audioFile);
         Task<FileModel> GetFileAsync(int fileId);
-        Task<FileModel> ExtractMetadata(Tuple<int, string, string> fileData);
+        Task<FileModel> ExtractMetadataAsync(int fileId);
         Task<List<FileModel>> GetFilesAsync();
-        Task<byte[]> GetAudioStream(int fileId);
-        Task UpdateMetadata(int fileId, string artist, string album, string trackTitle, string genre, string trackNumber);
+        Task<byte[]> GetAudioStreamAsync(int fileId);
+        Task UpdateMetadataAsync(int fileId, string artist, string album, string trackTitle, string genre, string trackNumber);
     }
 
     public class FileService : IFileService
@@ -31,7 +31,7 @@ namespace Logcast.Recruitment.Domain.Services
             _fileRepository = fileRepository;
         }
 
-        public async Task<Tuple<int, string, string>> AddFileAsync(IFormFile audioFile)
+        public async Task<int> AddFileAsync(IFormFile audioFile)
         {
             string path = $"{_contentPath}\\TempFiles\\";
             
@@ -52,23 +52,19 @@ namespace Logcast.Recruitment.Domain.Services
 
             string fileName = $"{Guid.NewGuid()}_{DateTime.Now.ToString("MM.dd.yy_HH.mm.ss")}{extension}";
 
-            Task result = CopyDocumentAsync(audioFile, $"{path}{fileName}");
-            result.Wait();
-
-            if (result.IsFaulted)
+            try
+            {
+                using (var fileStream = new FileStream($"{path}{fileName}", FileMode.Create))
+                {
+                    await audioFile.CopyToAsync(fileStream);
+                }
+            }
+            catch
             {
                 throw new IOException("Not possible to save the file");
             }
 
             return await _fileRepository.AddFileAsync(audioFile.FileName, $"{path}{fileName}");
-        }
-
-        static async Task CopyDocumentAsync(IFormFile audioFile, string pathToFile)
-        {
-            using (var fileStream = new FileStream(pathToFile, FileMode.Create))
-            {
-                await audioFile.CopyToAsync(fileStream);
-            }
         }
 
         public async Task<FileModel> GetFileAsync(int fileId)
@@ -77,7 +73,7 @@ namespace Logcast.Recruitment.Domain.Services
             return file.ToDomainModel();
         }
 
-        public async Task<byte[]> GetAudioStream(int fileId)
+        public async Task<byte[]> GetAudioStreamAsync(int fileId)
         {
             var f = await _fileRepository.GetFileAsync(fileId);
             byte[] bytes;
@@ -97,9 +93,9 @@ namespace Logcast.Recruitment.Domain.Services
             return files.Select(x => x.ToDomainModel()).ToList();
         }
 
-        public async Task<FileModel> ExtractMetadata(Tuple<int, string, string> fileData)
+        public async Task<FileModel> ExtractMetadataAsync(int fileId)
         {
-            var file = await _fileRepository.GetFileAsync(fileData.Item1);
+            var file = await _fileRepository.GetFileAsync(fileId);
             var tfile = TagLib.File.Create(file.Path);
 
             if (!string.IsNullOrEmpty(tfile.Tag.FirstPerformer))
@@ -130,12 +126,12 @@ namespace Logcast.Recruitment.Domain.Services
 
             file.Type = tfile.MimeType.Split("/").Last();
 
-            _fileRepository.UpdateFileDetailsAsync(file);
+            _fileRepository.UpdateFileDetails(file);
 
             return file.ToDomainModel();
         }
 
-        public async Task UpdateMetadata(int fileId, string artist, string album, string trackTitle, string genre, string trackNumber)
+        public async Task UpdateMetadataAsync(int fileId, string artist, string album, string trackTitle, string genre, string trackNumber)
         {
             var file = await _fileRepository.GetFileAsync(fileId);
             file.Artist = artist;
@@ -144,7 +140,7 @@ namespace Logcast.Recruitment.Domain.Services
             file.Genre = genre;
             file.TrackNumber = trackNumber;
 
-            _fileRepository.UpdateFileDetailsAsync(file);
+            _fileRepository.UpdateFileDetails(file);
         }
     }
 }

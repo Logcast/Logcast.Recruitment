@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Logcast.Recruitment.DataAccess.Entities;
 using Logcast.Recruitment.DataAccess.Exceptions;
 using Logcast.Recruitment.DataAccess.Factories;
-using Logcast.Recruitment.Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Logcast.Recruitment.DataAccess.Repositories
 {
     public interface IFileRepository
     {
-        Task<Tuple<int, string, string>> AddFileAsync(string firstName, string email);
-        void UpdateFileDetailsAsync(File file);
+        Task<int> AddFileAsync(string firstName, string email);
+        void UpdateFileDetails(File file);
         Task<File> GetFileAsync(int fileId);
         Task<List<File>> GetFilesAsync();
     }
@@ -27,12 +24,12 @@ namespace Logcast.Recruitment.DataAccess.Repositories
             _applicationDbContext = dbContextFactory.Create();
         }
 
-        public async Task<Tuple<int, string, string>> AddFileAsync(string name, string path)
+        public async Task<int> AddFileAsync(string name, string path)
         {
             var newFile = await _applicationDbContext.Files.AddAsync(new File(name, path));
             await _applicationDbContext.SaveChangesAsync();
 
-            return Tuple.Create(newFile.Entity.Id, newFile.Entity.Name, newFile.Entity.Path);
+            return newFile.Entity.Id;
         }
 
         public async Task<File> GetFileAsync(int fileId)
@@ -47,7 +44,7 @@ namespace Logcast.Recruitment.DataAccess.Repositories
             return await _applicationDbContext.Files.ToListAsync();
         }
 
-        public void UpdateFileDetailsAsync(File file)
+        public void UpdateFileDetails(File file)
         {
             _applicationDbContext.Files.Update(file);
             _applicationDbContext.SaveChanges();

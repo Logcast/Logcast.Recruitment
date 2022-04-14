@@ -44,9 +44,11 @@ export const Player = ( props: {metadata: FileInformation | null, emergencyStop:
                         }
                     })
                     .then(_ => {
-                        // Video playback started ;)
+                        // Video playback started
                     })
-                    .catch(e => { }); 
+                    .catch(e => {
+                        console.log(e);
+                    }); 
                 }
             }
             else {

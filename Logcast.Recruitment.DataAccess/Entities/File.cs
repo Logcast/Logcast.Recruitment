@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Logcast.Recruitment.Shared.Models;
 
 namespace Logcast.Recruitment.DataAccess.Entities

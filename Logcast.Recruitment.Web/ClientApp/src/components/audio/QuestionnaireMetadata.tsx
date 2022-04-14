@@ -30,7 +30,9 @@ export const QuestionnaireMetadata = ( props: React.PropsWithChildren<{audioMeta
         apiClient.post('api/audio/', formData)
             .then((res) => {
                 setStep(0);
-            }).catch(e => { });
+            }).catch(e => {
+                console.log(e);
+            });
     };
     
     const skip = () => {
@@ -71,7 +73,7 @@ export const QuestionnaireMetadata = ( props: React.PropsWithChildren<{audioMeta
             </FormGroup>
             
             <p><Button style={{...{marginTop: "18px"}, ...buttonStyle}} onClick={() => onSubmitMetadataUpdate()}>Update</Button> </p>
-            <p><Button style={{...{marginTop: "18px"}, ...buttonStyle}} onClick={() => skip()}>Skip Set Up</Button> </p>
+            <p><Button style={{...{marginTop: "18px"}, ...buttonStyle}} onClick={() => skip()}>Skip Metadata Set Up</Button> </p>
         </Form>
     );
 };
