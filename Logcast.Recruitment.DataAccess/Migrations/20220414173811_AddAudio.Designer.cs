@@ -4,14 +4,16 @@ using Logcast.Recruitment.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Logcast.Recruitment.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220413173811_AddAudio")]
+    partial class AddAudio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,39 +37,6 @@ namespace Logcast.Recruitment.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Audios");
-                });
-
-            modelBuilder.Entity("Logcast.Recruitment.DataAccess.Entities.Metadata", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Album")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AudioBitrate")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AudioId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("Duration")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("MimeType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Performers")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Metadatas");
                 });
 
             modelBuilder.Entity("Logcast.Recruitment.DataAccess.Entities.Subscription", b =>

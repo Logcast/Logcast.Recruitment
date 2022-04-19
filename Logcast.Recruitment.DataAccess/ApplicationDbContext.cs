@@ -10,6 +10,8 @@ namespace Logcast.Recruitment.DataAccess
         }
 
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<Audio> Audios { get; set; }
+        public DbSet<Metadata> Metadatas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

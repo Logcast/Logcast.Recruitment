@@ -22,6 +22,8 @@ namespace Logcast.Recruitment.DataAccess.Configuration
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddTransient<IAudioRepository, AudioRepository>();
+            services.AddTransient<IMetadataRepository, MetadataRepository>();
         }
 
         private static void AddFactories(this IServiceCollection services)
