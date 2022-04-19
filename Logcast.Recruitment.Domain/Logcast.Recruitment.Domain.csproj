@@ -9,4 +9,11 @@
     <ProjectReference Include="..\Logcast.Recruitment.Shared\Logcast.Recruitment.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Hashids.net" Version="1.5.0" />
+    <PackageReference Include="MediaInfo.Core.Native" Version="21.9.1" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
+    <PackageReference Include="TagLibSharp" Version="2.2.0" />
+  </ItemGroup>
+
 </Project>

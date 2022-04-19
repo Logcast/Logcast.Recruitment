@@ -1,0 +1,16 @@
+.featureHiddenTop {
+    transform: translateY(-100vh);
+    opacity: 0;
+    transition: transform 600ms ease 0s, opacity 300ms ease 0s;
+}
+
+.featureHiddenBottom {
+    transform: translateY(100vh);
+    opacity: 0;
+    transition: transform 600ms ease 0s, opacity 300ms ease 0s;
+}
+
+.featureVisible {
+    transform: translateY(0);
+    transition: transform 600ms ease 0s, opacity 300ms ease 0s;
+}
