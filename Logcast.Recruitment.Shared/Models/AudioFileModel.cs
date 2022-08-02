@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Logcast.Recruitment.Shared.Models
 {
@@ -8,7 +9,7 @@ namespace Logcast.Recruitment.Shared.Models
         public string Name { get; set; }
         public string Path { get; set; }
         public string Extension { get; set; }
-        public byte[] Data { get; set; }
+        public Stream Stream { get; set; }
         public int MetaDataId { get; set; }
     }
 }
