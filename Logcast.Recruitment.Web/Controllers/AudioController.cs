@@ -30,6 +30,8 @@ namespace Logcast.Recruitment.Web.Controllers
         {
             if (audioFile is null)
                 BadRequest("Invalid file.");
+            if (string.IsNullOrEmpty(audioFile.FileName) || string.IsNullOrWhiteSpace(audioFile.FileName))
+                BadRequest("Invalid filename.");
             try
             {
                 var audioDataId = await _audioService.AddAudioFileAsync(audioFile);
@@ -69,6 +71,8 @@ namespace Logcast.Recruitment.Web.Controllers
         [ProducesResponseType(typeof(AudioMetadataResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAudioMetadata([FromRoute] int audioId)
         {
+            if (audioId <= 0)
+                BadRequest($"Invalid audioId: {audioId}");
             try
             {
                 var metaData = await _audioService.GetMetaDataForAudioDataAsync(audioId);
@@ -87,6 +91,8 @@ namespace Logcast.Recruitment.Web.Controllers
         [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAudioStream([FromRoute] int audioId)
         {
+            if (audioId <= 0)
+                BadRequest($"Invalid audioId: {audioId}");
 	        try
             {
                 var audioData = await _audioService.GetAudioDataAsync(audioId);
