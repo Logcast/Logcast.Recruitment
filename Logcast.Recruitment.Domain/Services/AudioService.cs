@@ -50,6 +50,9 @@ namespace Logcast.Recruitment.Domain.Services
 
         public async Task<int> AddAudioFileAsync(IFormFile audioFile)
         {
+
+
+
             if ((audioFile is null) || !IsValidFileType(audioFile.FileName))
                 throw new InvalidFileException();
             try
@@ -68,6 +71,7 @@ namespace Logcast.Recruitment.Domain.Services
 
         public async Task<AudioData> GetAudioDataAsync(int audioId)
         {
+
             return await _audioFileRepository.GetAudioDataAsync(audioId);
         }
 
@@ -97,6 +101,8 @@ namespace Logcast.Recruitment.Domain.Services
 
         public MetaData CreateMetadata(string filepath)
         {
+            if (string.IsNullOrWhiteSpace(filepath))
+                throw new InvalidFileException();
             TagLib.File tfile;
             try
             {

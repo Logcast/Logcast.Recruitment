@@ -70,13 +70,13 @@ namespace Logcast.Recruitment.DataAccess.Repositories
                 catch(Exception e)
                 {
                     Console.WriteLine($"Unable to save audio file data: {e}");
-                    throw;
+                    throw new UnableToSaveAudioException();
                 }
             }
             catch(Exception e)
             {
                 Console.WriteLine($"Unable to create audio file directory: {e}");
-                throw;
+                throw new UnableToCreateDirectoryException();
             }
         }
 
