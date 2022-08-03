@@ -15,6 +15,8 @@ namespace Logcast.Recruitment.Domain.Services
         Task<AudioData> GetAudioDataAsync(int audioId);
         Task<MetaData> GetMetaDataAsync(int metaDataId);
         Task<MetaData> GetMetaDataForAudioDataAsync(int audioId);
+        Task<int> UpdateMetaDataForAudioDataAsync(int audioId, MetaData metaData);
+        MetaData CreateMetadata(string filepath);
     }
 
     public class AudioService : IAudioService
@@ -53,25 +55,14 @@ namespace Logcast.Recruitment.Domain.Services
             try
             {
                 var audioStream = audioFile.OpenReadStream();
-                var tfile = TagLib.File.Create(audioFile.FileName);
-                var metaData = new MetaData(){
-                    Title = tfile.Tag.Title,
-                    Artist = tfile.Tag.Title,
-                    Album = tfile.Tag.Album,
-                    AlbumArtists = tfile.Tag.AlbumArtists.ToString(),
-                    Genre = tfile.Tag.FirstGenre,
-                    TrackNumber = tfile.Tag.Track,
-                    Bitrate = tfile.Properties.AudioBitrate,
-                    Duration = tfile.Properties.Duration
-                };
-
+                var metaData = CreateMetadata(audioFile.FileName);
                 var audioId = await _audioFileRepository.AddAudioFileAsync(audioStream, audioFile.FileName, metaData.Id);
                 await _metaDataRepository.AddMetaDataAsync(metaData);
                 return audioId;
             }
-            catch(Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -91,6 +82,41 @@ namespace Logcast.Recruitment.Domain.Services
             if (audioData.MetaDataId <= 0)
                 throw new MissingMetadataException();
             return await GetMetaDataAsync(audioData.MetaDataId);
+        }
+
+
+        public async Task<int> UpdateMetaDataForAudioDataAsync(int audioId, MetaData metaData)
+        {
+            var audioData = await GetAudioDataAsync(audioId);
+            audioData.MetaDataId = metaData.Id;
+            await _audioFileRepository.DeleteAudioDataAsync(audioData.Id);
+            await _audioFileRepository.AddAudioDataAsync(audioData);
+            await _metaDataRepository.AddMetaDataAsync(metaData);
+            return metaData.Id;
+        }
+
+        public MetaData CreateMetadata(string filepath)
+        {
+            TagLib.File tfile;
+            try
+            {
+                tfile = TagLib.File.Create(filepath);
+            }
+            catch
+            {
+                throw new InvalidFileException();
+            }
+            return new MetaData(){
+                Title = tfile.Tag.Title,
+                Artist = tfile.Tag.Title,
+                Album = tfile.Tag.Album,
+                AlbumArtists = tfile.Tag.AlbumArtists.ToString(),
+                Genre = tfile.Tag.FirstGenre,
+                TrackNumber = tfile.Tag.Track,
+                Bitrate = tfile.Properties.AudioBitrate,
+                Duration = tfile.Properties.Duration,
+                FilePath = filepath
+            };
         }
     }
 }

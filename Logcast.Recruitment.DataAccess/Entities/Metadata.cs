@@ -11,7 +11,7 @@ namespace Logcast.Recruitment.DataAccess.Entities
         {
         }
 
-        public MetaData(string title, string artist, string album, string albumArtists, string genre, int bitrate, TimeSpan duration, uint trackNumber)
+        public MetaData(string title, string artist, string album, string albumArtists, string genre, int bitrate, TimeSpan duration, uint trackNumber, string filepath)
         {
             Title = title;
             Artist = artist;
@@ -21,6 +21,7 @@ namespace Logcast.Recruitment.DataAccess.Entities
             Bitrate = bitrate;
             Duration = duration;
             TrackNumber = trackNumber;
+            FilePath = filepath;
         }
 
         [Key] public int Id { get; set; }
@@ -45,6 +46,7 @@ namespace Logcast.Recruitment.DataAccess.Entities
         public TimeSpan Duration { get; set; }
 
         public uint TrackNumber { get; set; }
+        public string FilePath { get; set; }
 
 
 
@@ -60,7 +62,8 @@ namespace Logcast.Recruitment.DataAccess.Entities
                 Genre = Genre,
                 Bitrate = Bitrate,
                 Duration = Duration,
-                TrackNumber = TrackNumber
+                TrackNumber = TrackNumber,
+                FilePath = FilePath
             };
         }
     }

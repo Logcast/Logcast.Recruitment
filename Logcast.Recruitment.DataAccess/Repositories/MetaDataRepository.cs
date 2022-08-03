@@ -38,7 +38,8 @@ namespace Logcast.Recruitment.DataAccess.Repositories
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine($"Unable add metadata {metaData}: {e}");
+                throw;
             }
         }
 
@@ -54,7 +55,7 @@ namespace Logcast.Recruitment.DataAccess.Repositories
             catch(Exception e)
             {
                 Console.WriteLine($"Unable get metadata for id {metaDataId}: {e}");
-                throw e;
+                throw;
             }
         }
 

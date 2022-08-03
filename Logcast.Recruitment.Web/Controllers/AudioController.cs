@@ -8,6 +8,7 @@ using Logcast.Recruitment.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using TagLib;
 
 namespace Logcast.Recruitment.Web.Controllers
 {
@@ -27,10 +28,10 @@ namespace Logcast.Recruitment.Web.Controllers
         [ProducesResponseType(typeof(UploadAudioFileResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadAudioFile(IFormFile audioFile)
         {
+            if (audioFile is null)
+                BadRequest("Invalid file.");
             try
             {
-                if (audioFile is null)
-                    BadRequest("Invalid file.");
                 var audioDataId = await _audioService.AddAudioFileAsync(audioFile);
                 return Ok();
             }
@@ -45,7 +46,22 @@ namespace Logcast.Recruitment.Web.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, "Audio metadata registered successfully")]
         public async Task<IActionResult> AddAudioMetadata([Required] [FromBody] AddAudioRequest request)
         {
-            return Ok();
+            if (request is null)
+                BadRequest($"Invalid metadata request: {request}");
+            try
+            {
+                var AudioData = await _audioService.GetAudioDataAsync(request.AudioDataId);
+                var metaData = _audioService.CreateMetadata(AudioData.Path);
+                await _audioService.UpdateMetaDataForAudioDataAsync(AudioData.Id, metaData);
+                return Ok();
+            }
+            catch(Exception e)
+            {
+                if (e is InvalidFileException)
+                    BadRequest("Invalid file.");
+                Console.WriteLine($"Failed to update metadata: {e}");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("{audioId:Guid}")]
@@ -60,11 +76,10 @@ namespace Logcast.Recruitment.Web.Controllers
             }
             catch(Exception e)
             {
-                if (e is DllNotFoundException)
+                if (e is NotFoundException)
                     return NotFound();
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            
         }
 
         [HttpGet("stream/{audioId:Guid}")]

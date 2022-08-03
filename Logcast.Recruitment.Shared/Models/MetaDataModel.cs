@@ -13,5 +13,6 @@ namespace Logcast.Recruitment.Shared.Models
         public int Bitrate { get; set; }
         public TimeSpan Duration { get; set; }
         public uint TrackNumber { get; set; }
+        public string FilePath { get; set; }
     }
 }

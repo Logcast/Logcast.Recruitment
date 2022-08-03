@@ -8,15 +8,17 @@ using Logcast.Recruitment.Shared.Models;
 using Logcast.Recruitment.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using TigLib;
+using TagLib;
 
 namespace Logcast.Recruitment.DataAccess.Repositories
 {
     public interface IAudioFileRepository
     {
         Task<int> AddAudioFileAsync(Stream audioStream, string audioFileName, int metaDataId);
+        Task<int> AddAudioDataAsync(AudioData audioData);
         Task<AudioData> GetAudioDataAsync(int audioFileId);
         Task<bool> DoesAudioDataExistAsync(int audioFileId);
+        Task<bool> DeleteAudioDataAsync(int audioFileId);
     }
 
     public class AudioFileRepository : IAudioFileRepository
@@ -68,14 +70,22 @@ namespace Logcast.Recruitment.DataAccess.Repositories
                 catch(Exception e)
                 {
                     Console.WriteLine($"Unable to save audio file data: {e}");
-                    throw e;
+                    throw;
                 }
             }
             catch(Exception e)
             {
                 Console.WriteLine($"Unable to create audio file directory: {e}");
-                throw e;
+                throw;
             }
+        }
+
+
+        public async Task<int> AddAudioDataAsync(AudioData audioData)
+        {
+            await _applicationDbContext.AudioData.AddAsync(audioData);
+            await _applicationDbContext.SaveChangesAsync();
+            return audioData.Id;
         }
 
         public async Task<AudioData> GetAudioDataAsync(int audioFileId)
@@ -90,7 +100,7 @@ namespace Logcast.Recruitment.DataAccess.Repositories
             catch(Exception e)
             {
                 Console.WriteLine($"Unable get audio data for id {audioFileId}: {e}");
-                throw e;
+                throw;
             }
         }
 
@@ -98,5 +108,20 @@ namespace Logcast.Recruitment.DataAccess.Repositories
 		{
 			return await _applicationDbContext.AudioData.AnyAsync(x => x.Id == audioFileId);
 		}
+
+        public async Task<bool> DeleteAudioDataAsync(int audioFileId)
+        {
+            try
+            {
+                var audioData = await GetAudioDataAsync(audioFileId);
+                _applicationDbContext.AudioData.Remove(audioData);
+                await _applicationDbContext.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
